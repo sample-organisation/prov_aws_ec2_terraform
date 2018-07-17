@@ -6,7 +6,7 @@ provider "aws" {
 }
 
 # SSH key pair for accessing ec2 machine
-resource "aws_key_pair" "sshKey" {
+resource "aws_key_pair" "sshKeyPair" {
   key_name   = "${var.aws_key_name}"
   public_key = "${var.public_ssh_key}"
 }
@@ -17,7 +17,7 @@ resource "aws_instance" "ec2Instances" {
   ami = "${var.inst_ami}"
   availability_zone = "${lookup(var.availability_zone, var.vpc_region)}"
   instance_type = "${var.inst_type}"
-  key_name = "${var.aws_key_name}"
+  key_name = "${aws_key_pair.sshKeyPair.key_name}"
   subnet_id = "${var.vpc_public_sn_id}"
   associate_public_ip_address = true
   source_dest_check = false
